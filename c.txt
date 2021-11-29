@@ -1,0 +1,376 @@
+I0["I0<br>
+P'-> ‧ P<br>
+P-> ‧ D S<br>
+D-> ‧ L id ; D<br>
+D-> ‧<br>
+L-> ‧ int<br>
+L-> ‧ float<br>
+"]
+I0--"P"-->I1
+I0--"D"-->I2
+I0--"L"-->I3
+I0--"int"-->I4
+I0--"float"-->I5
+I1["I1<br>
+P'-> P ‧<br>
+"]
+I2["I2<br>
+P-> D ‧ S<br>
+S-> ‧ id = E;<br>
+S-> ‧ if ( C ) S<br>
+S-> ‧ if ( C ) S else S<br>
+S-> ‧ while ( C ) S<br>
+S-> ‧ S ; S<br>
+"]
+I2--"S"-->I6
+I2--"if"-->I7
+I2--"while"-->I8
+I2--"id"-->I9
+I3["I3<br>
+D-> L ‧ id ; D<br>
+"]
+I3--"id"-->I10
+I4["I4<br>
+L-> int ‧<br>
+"]
+I5["I5<br>
+L-> float ‧<br>
+"]
+I6["I6<br>
+P-> D S ‧<br>
+S-> S ‧ ; S<br>
+"]
+I6--";"-->I11
+I7["I7<br>
+S-> if ‧ ( C ) S<br>
+S-> if ‧ ( C ) S else S<br>
+"]
+I7--"("-->I12
+I8["I8<br>
+S-> while ‧ ( C ) S<br>
+"]
+I8--"("-->I13
+I9["I9<br>
+S-> id ‧ = E;<br>
+"]
+I9--"="-->I14
+I10["I10<br>
+D-> L id ‧ ; D<br>
+"]
+I10--";"-->I15
+I11["I11<br>
+S-> S ; ‧ S<br>
+S-> ‧ id = E;<br>
+S-> ‧ if ( C ) S<br>
+S-> ‧ if ( C ) S else S<br>
+S-> ‧ while ( C ) S<br>
+S-> ‧ S ; S<br>
+"]
+I11--"S"-->I16
+I11--"if"-->I7
+I11--"while"-->I8
+I11--"id"-->I9
+I12["I12<br>
+S-> if ( ‧ C ) S<br>
+S-> if ( ‧ C ) S else S<br>
+C-> ‧ E > E<br>
+C-> ‧ E < E<br>
+C-> ‧ E == E<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I12--"C"-->I17
+I12--"E"-->I18
+I12--"T"-->I19
+I12--"F"-->I20
+I12--"("-->I21
+I12--"id"-->I22
+I12--"digits"-->I23
+I13["I13<br>
+S-> while ( ‧ C ) S<br>
+C-> ‧ E > E<br>
+C-> ‧ E < E<br>
+C-> ‧ E == E<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I13--"C"-->I24
+I13--"E"-->I18
+I13--"T"-->I19
+I13--"F"-->I20
+I13--"("-->I21
+I13--"id"-->I22
+I13--"digits"-->I23
+I14["I14<br>
+S-> id = ‧ E;<br>
+"]
+I15["I15<br>
+D-> L id ; ‧ D<br>
+D-> ‧ L id ; D<br>
+D-> ‧<br>
+L-> ‧ int<br>
+L-> ‧ float<br>
+"]
+I15--"D"-->I25
+I15--"L"-->I3
+I15--"int"-->I4
+I15--"float"-->I5
+I16["I16<br>
+S-> S ; S ‧<br>
+S-> S ‧ ; S<br>
+"]
+I16--";"-->I11
+I17["I17<br>
+S-> if ( C ‧ ) S<br>
+S-> if ( C ‧ ) S else S<br>
+"]
+I17--")"-->I26
+I18["I18<br>
+C-> E ‧ > E<br>
+C-> E ‧ < E<br>
+C-> E ‧ == E<br>
+E-> E ‧ + T<br>
+E-> E ‧ – T<br>
+"]
+I18--">"-->I27
+I18--"<"-->I28
+I18--"=="-->I29
+I18--"+"-->I30
+I19["I19<br>
+E-> T ‧<br>
+T-> T ‧ * F<br>
+T-> T ‧ / F<br>
+"]
+I19--"*"-->I31
+I19--"/"-->I32
+I20["I20<br>
+T-> F ‧<br>
+"]
+I21["I21<br>
+F-> ( ‧ E )<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I21--"E"-->I33
+I21--"T"-->I19
+I21--"F"-->I20
+I21--"("-->I21
+I21--"id"-->I22
+I21--"digits"-->I23
+I22["I22<br>
+F-> id ‧<br>
+"]
+I23["I23<br>
+F-> digits ‧<br>
+"]
+I24["I24<br>
+S-> while ( C ‧ ) S<br>
+"]
+I24--")"-->I34
+I25["I25<br>
+D-> L id ; D ‧<br>
+"]
+I26["I26<br>
+S-> if ( C ) ‧ S<br>
+S-> if ( C ) ‧ S else S<br>
+S-> ‧ id = E;<br>
+S-> ‧ if ( C ) S<br>
+S-> ‧ if ( C ) S else S<br>
+S-> ‧ while ( C ) S<br>
+S-> ‧ S ; S<br>
+"]
+I26--"S"-->I35
+I26--"if"-->I7
+I26--"while"-->I8
+I26--"id"-->I9
+I27["I27<br>
+C-> E > ‧ E<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I27--"E"-->I36
+I27--"T"-->I19
+I27--"F"-->I20
+I27--"("-->I21
+I27--"id"-->I22
+I27--"digits"-->I23
+I28["I28<br>
+C-> E < ‧ E<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I28--"E"-->I37
+I28--"T"-->I19
+I28--"F"-->I20
+I28--"("-->I21
+I28--"id"-->I22
+I28--"digits"-->I23
+I29["I29<br>
+C-> E == ‧ E<br>
+E-> ‧ E + T<br>
+E-> ‧ E – T<br>
+E-> ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I29--"E"-->I38
+I29--"T"-->I19
+I29--"F"-->I20
+I29--"("-->I21
+I29--"id"-->I22
+I29--"digits"-->I23
+I30["I30<br>
+E-> E + ‧ T<br>
+T-> ‧ F<br>
+T-> ‧ T * F<br>
+T-> ‧ T / F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I30--"T"-->I39
+I30--"F"-->I20
+I30--"("-->I21
+I30--"id"-->I22
+I30--"digits"-->I23
+I31["I31<br>
+T-> T * ‧ F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I31--"F"-->I40
+I31--"("-->I21
+I31--"id"-->I22
+I31--"digits"-->I23
+I32["I32<br>
+T-> T / ‧ F<br>
+F-> ‧ ( E )<br>
+F-> ‧ id<br>
+F-> ‧ digits<br>
+"]
+I32--"F"-->I41
+I32--"("-->I21
+I32--"id"-->I22
+I32--"digits"-->I23
+I33["I33<br>
+F-> ( E ‧ )<br>
+E-> E ‧ + T<br>
+E-> E ‧ – T<br>
+"]
+I33--")"-->I42
+I33--"+"-->I30
+I34["I34<br>
+S-> while ( C ) ‧ S<br>
+S-> ‧ id = E;<br>
+S-> ‧ if ( C ) S<br>
+S-> ‧ if ( C ) S else S<br>
+S-> ‧ while ( C ) S<br>
+S-> ‧ S ; S<br>
+"]
+I34--"S"-->I43
+I34--"if"-->I7
+I34--"while"-->I8
+I34--"id"-->I9
+I35["I35<br>
+S-> if ( C ) S ‧<br>
+S-> if ( C ) S ‧ else S<br>
+S-> S ‧ ; S<br>
+"]
+I35--";"-->I11
+I35--"else"-->I44
+I36["I36<br>
+C-> E > E ‧<br>
+E-> E ‧ + T<br>
+E-> E ‧ – T<br>
+"]
+I36--"+"-->I30
+I37["I37<br>
+C-> E < E ‧<br>
+E-> E ‧ + T<br>
+E-> E ‧ – T<br>
+"]
+I37--"+"-->I30
+I38["I38<br>
+C-> E == E ‧<br>
+E-> E ‧ + T<br>
+E-> E ‧ – T<br>
+"]
+I38--"+"-->I30
+I39["I39<br>
+E-> E + T ‧<br>
+T-> T ‧ * F<br>
+T-> T ‧ / F<br>
+"]
+I39--"*"-->I31
+I39--"/"-->I32
+I40["I40<br>
+T-> T * F ‧<br>
+"]
+I41["I41<br>
+T-> T / F ‧<br>
+"]
+I42["I42<br>
+F-> ( E ) ‧<br>
+"]
+I43["I43<br>
+S-> while ( C ) S ‧<br>
+S-> S ‧ ; S<br>
+"]
+I43--";"-->I11
+I44["I44<br>
+S-> if ( C ) S else ‧ S<br>
+S-> ‧ id = E;<br>
+S-> ‧ if ( C ) S<br>
+S-> ‧ if ( C ) S else S<br>
+S-> ‧ while ( C ) S<br>
+S-> ‧ S ; S<br>
+"]
+I44--"S"-->I45
+I44--"if"-->I7
+I44--"while"-->I8
+I44--"id"-->I9
+I45["I45<br>
+S-> if ( C ) S else S ‧<br>
+S-> S ‧ ; S<br>
+"]
+I45--";"-->I11

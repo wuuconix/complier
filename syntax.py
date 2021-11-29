@@ -1,7 +1,26 @@
 from copy import deepcopy
 
 variables = ['P', 'D', 'S', 'L', 'C', 'E', 'T', 'F'] #语法变量们
-terminals = [';', 'int', 'float', 'if', 'else', 'while', '=', '(', ')', '>', '<', '==', '+', '-', '*', '/', 'id', 'digits']
+terminals = [';', 'int', 'float', 'if', 'else', 'while', '=', '(', ')', '>', '<', '==', '+', '-', '*', '/', 'id', 'digits', '$'] #最后加了个$，当作terminal
+
+first = {'P': ['int', 'float', 'id', 'if', 'while'], \
+         'D': ['int', 'float', 'ε'],\
+         'S': ['id', 'if', 'while'],\
+         'L': ['int', 'float'],\
+         'C': ['(', 'id', 'digits'],\
+         'E': ['(', 'id', 'digits'],\
+         'T': ['(', 'id', 'digits'],\
+         'F': ['(', 'id', 'digits']}
+
+follow = {'P': ['$'], \
+         'D': ['id', 'if', 'while'],\
+         'S': ['$', ';'], \
+         'L': ['id'],\
+         'C': [')'],\
+         'E': [';', '>', '<', '==', '+', '-', ')'],\
+         'T': [';', '>', '<', '==', '+', '-', ')', '*', '/'],\
+         'F': [';', '>', '<', '==', '+', '-', ')', '*', '/']}
+
 
 symbols = variables + terminals #所有的符号
 
@@ -20,6 +39,12 @@ class Item(): #项类，包含产生式头，产生式体 以及项集中点的�
     def __eq__(self, other): #重写相同，判断两个项是否相同
         return self.body == other.body and self.body == other.body and self.dot == other.dot
 
+    def eqProduction(self, other): #判断两者的产生式是否相同
+        if self.head == other.head and self.body == other.body:
+            return True
+        else:
+            return False
+
     def displayItem(self):
         tmp = deepcopy(self.body)
         tmp.insert(self.dot, "‧")
@@ -27,10 +52,10 @@ class Item(): #项类，包含产生式头，产生式体 以及项集中点的�
         global output
         if "ε" in body:
             print(f"{self.head}-> ‧")
-            output += f"{self.head}-> ‧\n"
+            output += f"{self.head}-> ‧<br>\n"
         else:
             print(f"{self.head}-> {body}")
-            output += f"{self.head}-> {body}\n"   
+            output += f"{self.head}-> {body}<br>\n"   
     def getExpect(self): #把产生式体点后面的字符拿出
         if self.dot >= len(self.body):
             return None
@@ -57,6 +82,7 @@ class Items(): #项集
         global ids
         self.itemList = []
         self.id = -1
+        self.goto = {}
     
     def __eq__(self, other) -> bool:
         if self.isSubItems(other.itemList) and other.isSubItems(self.itemList): #互为子集则相同
@@ -80,11 +106,10 @@ class Items(): #项集
     def displayItems(self): #可视化输出项集
         global output
         print(f"项集I{self.id}:")
-        output += f"项集I{self.id}:\n"
+        output += f'I{self.id}["I{self.id}<br>\n'
         for i in self.itemList:
             i.displayItem()
-        print("-----------------------")
-        output += "---------------------\n"
+        output += f'"]\n'
     def haveItem(self, item): #判断该项集中有无某个 项，若有则返回真
         if item in self.itemList:
             return True
@@ -103,6 +128,12 @@ class Items(): #项集
             expectList.append(i.getExpect())
         return expectList
 
+    def getReduceList(self): #返回项集中需要回溯的对应下标的列表
+        l = []
+        for i in self.itemList:
+            if i.dot == len(i.body):
+                l.append(self.itemList.index(i))
+        return l
 
 BasicItemsDict = {}
 with open("/root/complier/production.txt", "r") as f:
@@ -116,7 +147,9 @@ with open("/root/complier/production.txt", "r") as f:
         else:
             BasicItemsDict[head].append(tmpItem)
 
-# print(BasicItemsDict)
+Productions = [] #存储所有的产生式，具体proid.txt
+for key, value in BasicItemsDict.items():
+    Productions += BasicItemsDict[key]
 
 def closure(items: list)-> Items():
     newI = Items()
@@ -146,6 +179,7 @@ def goto(items: Items(), symbol: str)-> Items(): #输入一个项集对象，输
                 initItems.append(tmp)
         return closure(initItems)
 
+#产生集族
 num = 0
 a = BasicItemsDict["P'"]
 a = closure(a)
@@ -158,16 +192,56 @@ for i in ItemsList:
             num += 1
             tmpItems.changeId(num)
             ItemsList.append(tmpItems)
+            i.goto[j] = num
+        elif tmpItems and tmpItems in ItemsList:
+            i.goto[j] = ItemsList.index(tmpItems)
         else:
             pass
 
-print(ItemsList)
+# print(ItemsList)
+
+# for i in ItemsList:
+#     i.displayItems()
+#     for key, value in i.goto.items():
+#         output += f'I{i.id}--"{key}"-->I{value}\n'
+
+# with open("c.txt", "w") as f:
+#     f.write(output)
+
+
+# 生成SLR分析表，包含action和goto两个部分。
+Action = []
+Goto = []
 
 for i in ItemsList:
-    i.displayItems()
+    line_action = [-1] * len(terminals)
+    line_goto = [-1] * len(variables)
+    if i.goto: #有转移
+        for key, value in i.goto.items():
+            if key in terminals:
+                line_action[terminals.index(key)] = f"s{value}"
+            else:
+                line_goto[variables.index(key)] = f"{value}"
+    reduceList = i.getReduceList() #项集内部需要规约的下标
+    for j in reduceList:
+        reduce = i.itemList[j]
+        for k in Productions:
+            if k.eqProduction(reduce): #找到规约
+                reduceIndex = Productions.index(k)
+                head = k.head
+                if head == "P'":
+                    line_action[terminals.index("$")] = "acc"
+                else:
+                    for x in follow[head]:
+                        line_action[terminals.index(x)] = f"r{reduceIndex}"
+    Action.append(line_action)
+    Goto.append(line_goto)
 
-with open("c.txt", "w") as f:
-    f.write(output)
+print(Action)
+print("\n\n")
+print(Goto)
+
+
 # ItemsList.append(a)
 # b = goto(a, "L")
 # b.displayItems()

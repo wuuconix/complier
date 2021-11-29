@@ -1,0 +1,46 @@
+0
+P'-> ‧ P
+1
+P-> ‧ D S
+2
+D-> ‧ L id ; D
+3
+D-> ‧
+4
+L-> ‧ int
+5
+L-> ‧ float
+6
+S-> ‧ id = E;
+7
+S-> ‧ if ( C ) S
+8
+S-> ‧ if ( C ) S else S
+9
+S-> ‧ while ( C ) S
+10
+S-> ‧ S ; S
+11
+C-> ‧ E > E
+12
+C-> ‧ E < E
+13
+C-> ‧ E == E
+14
+E-> ‧ E + T
+15
+E-> ‧ E – T
+16
+E-> ‧ T
+17
+T-> ‧ F
+18
+T-> ‧ T * F
+19
+T-> ‧ T / F
+20
+F-> ‧ ( E )
+21
+F-> ‧ id
+22
+F-> ‧ digits
