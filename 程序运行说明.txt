@@ -1,0 +1,16 @@
+本目录包含词法分析程序和语法分析程序。
+
+分别为lexical.py 和 syntax.py 
+
+两者已经设置好了源程序的输入，源程序的输入已经被写在了input.c中。
+
+两程序均用python3编写而成。运行十分简单。只需要在电脑中安装python3，并且配置环境变量。
+
+运行词法分析：
+
+python3 lexical.py
+
+运行语法分析：
+
+python3 syntax.py
+

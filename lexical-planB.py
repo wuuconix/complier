@@ -2,7 +2,7 @@
 
 import re
 # filename = input("please input the filename you want to analyse: ")
-filename = "1.c"
+filename = "input.c"
 source = ""
 with open(filename, "r") as f:
     source = f.read()

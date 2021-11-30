@@ -1,8 +1,8 @@
 from copy import deepcopy
+from lexicalForsyn import getToken
 
 variables = ['P', 'D', 'S', 'L', 'C', 'E', 'T', 'F'] #语法变量们
 terminals = [';', 'int', 'float', 'if', 'else', 'while', '=', '(', ')', '>', '<', '==', '+', '-', '*', '/', 'id', 'digits', '$'] #最后加了个$，当作terminal
-
 first = {'P': ['int', 'float', 'id', 'if', 'while'], \
          'D': ['int', 'float', 'ε'],\
          'S': ['id', 'if', 'while'],\
@@ -11,7 +11,6 @@ first = {'P': ['int', 'float', 'id', 'if', 'while'], \
          'E': ['(', 'id', 'digits'],\
          'T': ['(', 'id', 'digits'],\
          'F': ['(', 'id', 'digits']}
-
 follow = {'P': ['$'], \
          'D': ['id', 'if', 'while'],\
          'S': ['$', ';'], \
@@ -20,10 +19,7 @@ follow = {'P': ['$'], \
          'E': [';', '>', '<', '==', '+', '-', ')'],\
          'T': [';', '>', '<', '==', '+', '-', ')', '*', '/'],\
          'F': [';', '>', '<', '==', '+', '-', ')', '*', '/']}
-
-
 symbols = variables + terminals #所有的符号
-
 output = ""
 
 class Item(): #项类，包含产生式头，产生式体 以及项集中点的位置
@@ -35,16 +31,13 @@ class Item(): #项类，包含产生式头，产生式体 以及项集中点的�
         self.head = head
         self.body = body
         self.dot = dot
-    
     def __eq__(self, other): #重写相同，判断两个项是否相同
         return self.body == other.body and self.body == other.body and self.dot == other.dot
-
     def eqProduction(self, other): #判断两者的产生式是否相同
         if self.head == other.head and self.body == other.body:
             return True
         else:
             return False
-
     def displayItem(self):
         tmp = deepcopy(self.body)
         tmp.insert(self.dot, "‧")
@@ -83,26 +76,20 @@ class Items(): #项集
         self.itemList = []
         self.id = -1
         self.goto = {}
-    
     def __eq__(self, other) -> bool:
         if self.isSubItems(other.itemList) and other.isSubItems(self.itemList): #互为子集则相同
             return True
-
     def changeId(self, id: int):
         self.id = id
-
     def pushItem(self, item): #添加
         tmp = deepcopy(item)
         if not self.haveItem(tmp):
             self.itemList.append(tmp)
-
     def pushItems(self, items): #添加项列表
         for i in items:
             self.pushItem(i)
-    
     def addArrow(self, input, itemId): #增加去处
         self.goto[str(input)] = int(itemId)
-    
     def displayItems(self): #可视化输出项集
         global output
         print(f"项集I{self.id}:")
@@ -115,28 +102,27 @@ class Items(): #项集
             return True
         else:
             return False
-
     def isSubItems(self, items): #判断某个项列表是否为子集
         for i in items:
             if not self.haveItem(i):
                 return False
         return True
-
     def getExpectList(self):
         expectList = []
         for i in self.itemList:
             expectList.append(i.getExpect())
         return expectList
-
     def getReduceList(self): #返回项集中需要回溯的对应下标的列表
         l = []
         for i in self.itemList:
             if i.dot == len(i.body):
                 l.append(self.itemList.index(i))
+            elif "ε" in i.body: #空产生式不满足上面的条件,但是也需要规约
+                l.append(self.itemList.index(i))
         return l
 
 BasicItemsDict = {}
-with open("/root/complier/production.txt", "r") as f:
+with open("production.txt", "r") as f:
     lines = f.read().split("\n")
     for i in lines:
         head = i.split("→")[0].rstrip()
@@ -237,14 +223,49 @@ for i in ItemsList:
     Action.append(line_action)
     Goto.append(line_goto)
 
-print(Action)
-print("\n\n")
-print(Goto)
+token = getToken() #词法分析得到的token序列
+inputList = []
+for i in token: #关键字和操作符保留，若是标识符和数字则直接写id和digits
+    if i[1] in ["keywords", "operator"]:
+        inputList.append(i[0])
+    elif i[1] in ["id", "digits"]:
+        inputList.append(i[1])
 
 
-# ItemsList.append(a)
-# b = goto(a, "L")
-# b.displayItems()
-# a = Items()
-# a.genBasicItems()
-# a.displayItems()
+inputList.append("$") #以$结尾
+statusStack = [0] #状态栈
+prefixStack = [] #已经识别的有效前缀
+print(f"状态栈     前缀      剩余输入")
+while(1):
+    print(f"{statusStack}    {prefixStack}    {inputList}")
+    input = inputList[0] #输入符号
+    status = int(statusStack[-1]) #最上面的状态
+    do = Action[status][terminals.index(input)]
+    if do == "acc":
+        print("分析成功")
+        break
+    if do == -1:
+        print("action时发生错误")
+        break
+    elif "s" in do:
+        statusStack.append(int(do[1:]))
+        prefixStack.append(input)
+        inputList.remove(input) #输入队列中删除它,因为已经移入prefixStack中了
+    elif "r" in do:
+        proId = int(do[1:])
+        proBody = Productions[proId].body
+        proHead = Productions[proId].head
+        if "ε" in proBody: #如果是空产生式的规约则不需要弹栈,直接加状态即可
+            pass
+        else:
+            for i in proBody:
+                prefixStack.pop() #弹栈
+                statusStack.pop()
+        prefixStack.append(proHead)
+        status = statusStack[-1]
+        nextStatus = int(Goto[status][variables.index(proHead)])
+        if nextStatus == -1:
+            print("goto时发生错误")
+            break
+        else:
+            statusStack.append(nextStatus)

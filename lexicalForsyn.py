@@ -130,6 +130,7 @@ def start(): #控制状态判断流程
             result.append(temp)
             i = j
 
-start()
-print(result)
+def getToken(): #向语法分析传递token
+    start()
+    return result
 
